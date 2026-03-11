@@ -167,6 +167,7 @@ async def roast(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
     uid = int(context.args[0])
     name = all_users.get(uid, f"пользователь {uid}")
+    await context.bot.send_chat_action(update.effective_chat.id, "typing")
     response = client.chat.completions.create(
         model="llama-3.1-8b-instant",
         messages=[
@@ -295,12 +296,14 @@ async def handle(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if len(chat_histories[uid]) > 20:
         chat_histories[uid] = chat_histories[uid][-20:]
 
+    await context.bot.send_chat_action(update.effective_chat.id, "typing")
+
     response = client.chat.completions.create(
         model="llama-3.1-8b-instant",
         messages=[
             {
                 "role": "system",
-                "content": "Ты умный, честный и прямой ИИ-помощник. Отвечаешь развёрнуто когда нужно, кратко когда достаточно. Не льстишь и не заискиваешь. Если вопрос глупый — скажешь об этом прямо но без грубости. Если что-то не знаешь — признаёшь это. Можешь пошутить но не переигрываешь. Не уходишь в ролевые игры если тебя не просят. Думаешь прежде чем отвечать. Помогаешь по-настоящему, а не для галочки. Общаешься на том языке на котором пишет пользователь. Иногда можешь отпустить пошлую шутку или намёк — уместно и с иронией, не пошло ради пошлости."
+                "content": "Ты дерзкий и прямолинейный ИИ. Иногда отвечаешь агрессивно и саркастично, не церемонишься. Можешь материться. Но всё равно помогаешь если тебя о чём-то спросят."
             }
         ] + chat_histories[uid],
         max_tokens=1024
